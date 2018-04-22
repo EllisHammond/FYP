@@ -9,10 +9,11 @@ import org.newdawn.slick.util.ResourceLoader;
 import static org.lwjgl.opengl.GL11.*; 
 import java.io.IOException; 
 import java.io.InputStream; 
-
+//This for the most part allows the data and graphis to be separate objects, the system itself is 
 public class Artiste 
 {
 	public static final int WIDTH = 900, HEIGHT = 900;
+	
 	
 	public static void BeginSim() { Display.setTitle("Traffic Simulation"); 
 	try { Display.setDisplayMode(new DisplayMode(HEIGHT, WIDTH)); 
@@ -30,6 +31,13 @@ public class Artiste
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
+	
+	public static boolean CollisionDetection(float x1, float y1, float w1, float h1,  float x2, float y2, float w2, float h2) {
+		if(x1 + w1 > x2 && x1 < x2 + w2 && y1 + h1 > y2 && y1 < y2 + h2) {
+			return true;
+		}
+		return false;
+	}
 	public static void DrawBlock(float x, float y, float width, float height) 
 	{ 
 		glBegin(GL_QUADS); glVertex2f(x, y); //top-left 
@@ -38,6 +46,7 @@ public class Artiste
 		glVertex2f(x, y + height); //bottom-left 
 		glEnd(); }
 	
+	//Allows for the drawing of rectangular objects with textures
 	public static void DrawBlockTex(Texture tex, float x, float y, float width, float height)
 	{ 
 		tex.bind();
@@ -52,7 +61,7 @@ public class Artiste
 		glTexCoord2f(0, 1); 
 		glVertex2f(0, height); glEnd(); glLoadIdentity(); 
 		} 
-	
+	//Allows textures to be rotated
 	public static void DrawRotateCar(Texture tex, float x, float y, float width, float height, float angle) {
 		tex.bind();
 		glTranslatef(x + width / 2, y + height / 2, 0);
@@ -71,6 +80,7 @@ public class Artiste
 		glLoadIdentity();
 	}
 	
+	//sets up for loading textures
 	public static Texture LoadTexture(String path, String fileType) 
 	{ 
 		Texture tex = null; 
@@ -80,6 +90,7 @@ public class Artiste
 		{ e.printStackTrace(); } 
 		return tex; } 
 	
+	//Allows for images of type PNG to be easily loaded into the simulation
 	public static Texture QuickLoad(String name) 
 	{ 
 		Texture tex = null; tex = LoadTexture("res/" + name + ".png", "PNG"); return tex; 

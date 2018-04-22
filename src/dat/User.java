@@ -1,43 +1,50 @@
 package dat;
 
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-
 import employees.Artiste;
 import employees.Artiste.*;
 import employees.SimTime;
 
 public class User {
 	
-	boolean mouseDown = false;
+	boolean leftMouseDown = false;
+	boolean rightMouseDown = false;
 	private BlockGrid grid;
 	private BlockType[] bType;
 	private int index;
+	private ArrayList<TrafficLight1> tLightList;
 	
 	public User(BlockGrid grid) {
 		this.grid = grid;
 		this.bType = new BlockType[3];
 		this.bType[0] = BlockType.Ground;
 		this.bType[1] = BlockType.Road;
-		this.bType[2] = BlockType.Intersection;
 		this.index = 0;		
 	}
 	
-	public void SetBlock() {
-		grid.setBlock((int)Math.floor(Mouse.getX() / 30),(int) Math.floor((Artiste.HEIGHT -Mouse.getY() - 1) / 30), bType[index]);
+	public void setBlock() {
+		grid.setBlock(
+				(int)Math.floor(Mouse.getX() / BlockGrid.BLOCK_SIZE),
+				(int) Math.floor((Artiste.HEIGHT -Mouse.getY() - 1) / BlockGrid.BLOCK_SIZE), 
+				bType[index]);
 	}
 	
 	public void update() {
-		if(Mouse.isButtonDown(0)) {
-		SetBlock();
+		if(Mouse.isButtonDown(0) && !leftMouseDown) {
+		setBlock();
 		
 		}
-		
+		leftMouseDown = Mouse.isButtonDown(0);
+		if(Mouse.isButtonDown(1) && !rightMouseDown) {
+		tLightList(new TrafficLight1(QuickLoad("Intersection1"), grid.getBlock(Mouse.getX()/ 30, (Artiste.HEIGHT - Mouse.getY()) / 30)));
+		}
+		rightMouseDown = Mouse.isButtonDown(1);
 		while(Keyboard.next()) {
 			if(Keyboard.getEventKey() == Keyboard.KEY_RIGHT && Keyboard.getEventKeyState()) {
-				IterateIndex();
+				iterateIndex();
 			}
 			
 			if(Keyboard.getEventKey() == Keyboard.KEY_UP && Keyboard.getEventKeyState() && SimTime.Multiplier() < 3) {
@@ -50,10 +57,14 @@ public class User {
 		}		
 	}
 
-	private void IterateIndex() {
+	private void iterateIndex() {
 		index++;
 		if(index > bType.length - 1) {
 			index = 0;
 		}
 	}
+	
+	
+	
+	
 }

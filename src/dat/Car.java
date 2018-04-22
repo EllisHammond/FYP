@@ -1,32 +1,27 @@
 package dat;
 
-import org.newdawn.slick.opengl.Texture;
-
-import dat.QuadrantPoint;
-import dat.User;
-import dat.Block;
-import dat.BlockGrid;
-
-import static employees.Artiste.*;
-import static employees.SimTime.*;
-
+import static employees.Artiste.DrawBlockTex;
+import static employees.Artiste.DrawRotateCar;
+import static employees.SimTime.Delta;
 
 import java.util.ArrayList;
-public class Car {
+
+import org.newdawn.slick.opengl.Texture;
+
+public class Car implements Object {
 	private int width, height, currentQuadrantPoint;
 	private float velocity, x, y;
 	private Texture texture;
 	private Block startBlock;
 	private boolean first, exists = true;
 	private BlockGrid grid;
-	
-	private ArrayList<QuadrantPoint> checkpoints;
+
+	private ArrayList<QuadrantPoint> corner;
 	private int[] directions;
 
-	public Car(Texture texture, Block startBlock, BlockGrid grid, int width,
-			int height, float velocity) {
+	public Car(Texture texture, Block startBlock, BlockGrid grid, int width, int height, float velocity) {
 		this.texture = texture;
-	
+
 		this.startBlock = startBlock;
 		this.x = startBlock.getX();
 		this.y = startBlock.getY();
@@ -35,51 +30,56 @@ public class Car {
 		this.velocity = velocity;
 		this.grid = grid;
 		this.first = true;
-		this.checkpoints = new ArrayList<QuadrantPoint>();
+		this.corner = new ArrayList<QuadrantPoint>();
 		this.directions = new int[2];
-		//X direction
+		// X direction
 		this.directions[0] = 0;
-		//Y direction
+		// Y direction
 		this.directions[1] = 0;
-		this.directions = findNextD(startBlock);
+
+		this.directions = chooseDirection(startBlock);
 		this.currentQuadrantPoint = 0;
 		populateQuadrantPointList();
+
 	}
 
 	public void update() {
-		//Check if it's the first time this class is updated, if so do nothing
+		// Check if it's the first time this class is updated, if so do nothing
 		if (first)
 			first = false;
 		else {
 			if (checkpointReached()) {
-				//Check if there are more checkpoints before moving on
-				if(currentQuadrantPoint + 1 == checkpoints.size()) {
-					DeleteCar();
-				} else				
-				currentQuadrantPoint++;
-			}else {
-		
-				//If not at a checkpoint, continue in current direction
-				x += Delta() * checkpoints.get(currentQuadrantPoint).getxDirection() * velocity;
-				y += Delta() * checkpoints.get(currentQuadrantPoint).getyDirection() * velocity;
+				// Check if there are more corner before moving on
+				if (currentQuadrantPoint + 1 == corner.size()) {
+					deleteCar();
+
+				} else
+					currentQuadrantPoint++;
+ 			}
+
+			else {
+
+				// If not at a checkpoint, continue in current direction
+				x += Delta() * corner.get(currentQuadrantPoint).getxDirection() * velocity;
+				y += Delta() * corner.get(currentQuadrantPoint).getyDirection() * velocity;
+
 			}
+
 		}
 	}
-	
-	//Run when last checkpoint is reached by car
 
-	private void DeleteCar() {
+	// Run when last checkpoint is reached by car
+
+	private void deleteCar() {
 		exists = false;
 	}
+
 	private boolean checkpointReached() {
 		boolean reached = false;
-		Block t = checkpoints.get(currentQuadrantPoint).getBlock();
-		//Check if position reached tile within variance of 3 (arbitrary)
-		if (x > t.getX() - 3 && 
-				x < t.getX() + 3 &&
-				y > t.getY() - 3 &&
-				y < t.getY() + 3) {
-			
+		Block t = corner.get(currentQuadrantPoint).getBlock();
+		// Check if position reached tile within variance of 3 (arbitrary)
+		if (x > t.getX() - 2 && x < t.getX() + 2 && y > t.getY() - 2 && y < t.getY() + 2) {
+
 			reached = true;
 			x = t.getX();
 			y = t.getY();
@@ -87,63 +87,68 @@ public class Car {
 		return reached;
 	}
 	
+	private void carCollision() {
+		int collisionA = 0;
+		
+	}
 	private void populateQuadrantPointList() {
-		//Add first checkpoint manually based on startBlock
-		checkpoints.add(findNextC(startBlock, directions = findNextD(startBlock)));
+		// Add first checkpoint manually based on startBlock
+		corner.add(findNextC(startBlock, directions = chooseDirection(startBlock)));
 		int counter = 0;
 		boolean cont = true;
 		while (cont) {
-			int[] currentD = findNextD(checkpoints.get(counter).getBlock());
-			//Check if a next direction/checkpoint exists, end after 20 checkpoints (arbitrary)
-			if (currentD[0] == 2 || counter == 10000) {
+			int[] currentD = chooseDirection(corner.get(counter).getBlock());
+			// Check if a next direction/checkpoint exists, end after 20 corner (arbitrary)
+			if (currentD[0] == 2) {
 				cont = false;
 			} else {
-				checkpoints.add(findNextC(checkpoints.get(counter).getBlock(), 
-						directions = findNextD(checkpoints.get(counter).getBlock())));
+				corner.add(findNextC(corner.get(counter).getBlock(),
+						directions = chooseDirection(corner.get(counter).getBlock())));
 			}
 			counter++;
 		}
 	}
-	
+
 	private QuadrantPoint findNextC(Block s, int[] dir) {
 		Block next = null;
 		QuadrantPoint c = null;
-		
-		//Boolean to decide if next checkpoint is found
+
+		// Boolean to decide if next checkpoint is found
 		boolean found = false;
-		
-		//Integer to increment each loop
+
+		// Integer to increment each loop
 		int counter = 1;
-		
+
 		while (!found) {
-			
-			if (s.getXPos() + dir[0] * counter ==  grid.getBlocksWide() ||
-					s.getYPos() + dir[1] * counter == grid.getBlocksHigh() ||
-					s.getType() != grid.getBlock(s.getXPos() + dir[0] * counter, 
-							s.getYPos() + dir[1] * counter).getType()) {
-				
+
+			if (s.getXPos() + dir[0] * counter == grid.getBlocksWide()
+					|| s.getYPos() + dir[1] * counter == grid.getBlocksHigh() || s.getType() != grid
+							.getBlock(s.getXPos() + dir[0] * counter, s.getYPos() + dir[1] * counter).getType()) {
+
 				found = true;
-				//Move counter back 1 to find tile before new tiletype
+				// Move counter back 1 to find tile before new tiletype
 				counter -= 1;
-				next = grid.getBlock(s.getXPos() + dir[0] * counter, 
-						s.getYPos() + dir[1] * counter);
+				next = grid.getBlock(s.getXPos() + dir[0] * counter, s.getYPos() + dir[1] * counter);
 			}
-			
+
 			counter++;
 		}
-		
+
 		c = new QuadrantPoint(next, dir[0], dir[1]);
 		return c;
 	}
-	
-	private int[] findNextD(Block s) {
+
+	private int[] chooseDirection(Block s) {
+		// Creates a logical impossibility just in case
 		int[] dir = new int[2];
+		// This states the position of every block that is 1 block away in 4 directions
 		Block u = grid.getBlock(s.getXPos(), s.getYPos() - 1);
 		Block r = grid.getBlock(s.getXPos() + 1, s.getYPos());
 		Block d = grid.getBlock(s.getXPos(), s.getYPos() + 1);
 		Block l = grid.getBlock(s.getXPos() - 1, s.getYPos());
-		
-		//Check if current inhabited tiletype matches tiletype above, right, down or left
+
+		// Check if current Block type matches the Block type in all directions,a nd if
+		// not travelling in this direction then turn if ther block is different
 		if (s.getType() == u.getType() && directions[1] != 1) {
 			dir[0] = 0;
 			dir[1] = -1;
@@ -162,18 +167,15 @@ public class Car {
 		}
 		return dir;
 	}
-	
-
 
 	public void draw() {
 
-		//Car texture
-		if(Delta() * checkpoints.get(currentQuadrantPoint).getyDirection() * velocity != 0) {
-		DrawRotateCar(texture, x, y, width, height, 90);
-		}
-		else if( Delta() * checkpoints.get(currentQuadrantPoint).getxDirection() * velocity != 0) {
-		DrawBlockTex(texture, x, y, width, height);
-		System.out.println("Turn");
+		// Car texture
+
+		if (Delta() * corner.get(currentQuadrantPoint).getyDirection() * velocity != 0) {
+			DrawRotateCar(texture, x, y, width, height, 90);
+		} else if (Delta() * corner.get(currentQuadrantPoint).getxDirection() * velocity != 0) {
+			DrawBlockTex(texture, x, y, width, height);
 		}
 	}
 
@@ -240,14 +242,13 @@ public class Car {
 	public void setFirst(boolean first) {
 		this.first = first;
 	}
-	
+
 	public BlockGrid getBlockGrid() {
 		return grid;
 	}
-	
+
 	public boolean isExists() {
 		return exists;
 	}
-	
-	
+
 }

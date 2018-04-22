@@ -1,23 +1,20 @@
 package dat;
 
-import static employees.Artiste.*;
-
-
-import dat.Block;
-import dat.BlockType;
 
 public class BlockGrid {
 
 	public Block[][] map;
 	private int blocksWidth, blocksHeight;
 	
+	public static final int BLOCK_SIZE = 30;
+	
 	public BlockGrid() {
-		this.blocksWidth = 30;
-		this.blocksHeight = 30;
+		this.blocksWidth = BLOCK_SIZE;
+		this.blocksHeight = BLOCK_SIZE;
 		map = new Block[blocksWidth][blocksHeight];
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
-				map[i][j] = new Block(i * 30, j * 30, 30, 30, BlockType.Ground);
+				map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Ground);
 			}
 		}
 	}
@@ -30,19 +27,17 @@ public class BlockGrid {
 			for (int j = 0; j < map[i].length; j++) {
 				switch (newMap[j][i]) {
 				case 0:
-					map[i][j] = new Block(i * 30, j * 30, 30, 30, BlockType.Ground);
+					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Ground);
 					break;
 				case 1:
-					map[i][j] = new Block(i * 30, j * 30, 30, 30, BlockType.Road);
+					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Road);
 					break;
+				
 				case 2:
-					map[i][j] = new Block(i * 30, j * 30, 30, 30, BlockType.Intersection);
-					break;
-				case 3:
-					map[i][j] = new Block(i * 30, j * 30, 30, 30, BlockType.Building);
+					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Building);
 					break;	
-				case 4:
-					map[i][j] = new Block(i * 30, j * 30, 30, 30, BlockType.Building2);
+				case 3:
+					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Building2);
 					break;	
 				}
 			}
@@ -50,7 +45,7 @@ public class BlockGrid {
 	}
 	
 	public void setBlock(int xCoord, int yCoord, BlockType type) {
-		map[xCoord][yCoord] = new Block(xCoord * 30, yCoord * 30, 30, 30, type);
+		map[xCoord][yCoord] = new Block(xCoord * BLOCK_SIZE, yCoord * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, type);
 	}
 	
 	public Block getBlock(int xPos, int yPos) {

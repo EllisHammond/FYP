@@ -7,6 +7,8 @@ public class Block
     private float x, y, width, height;
     private Texture texture;
     private BlockType type;
+    
+    
    
     public Block(float x, float y, float width, float height, BlockType type) {
             this.x = x;
@@ -26,11 +28,11 @@ public class Block
     }
    
     public int getXPos() {
-            return (int) x / 30;
+            return (int) x / BlockGrid.BLOCK_SIZE;
     }
    
     public int getYPos() {
-            return (int) y / 30;
+            return (int) y / BlockGrid.BLOCK_SIZE;
     }
 
     public void setX(float x) {
