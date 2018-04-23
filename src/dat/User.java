@@ -8,20 +8,23 @@ import employees.Artiste;
 import employees.Artiste.*;
 import employees.SimTime;
 
+
 public class User {
 	
-	boolean leftMouseDown = false;
+
 	boolean rightMouseDown = false;
 	private BlockGrid grid;
 	private BlockType[] bType;
 	private int index;
 	private ArrayList<TrafficLight1> tLightList;
-	
+	private TrafficLightType TLType;
 	public User(BlockGrid grid) {
 		this.grid = grid;
 		this.bType = new BlockType[3];
 		this.bType[0] = BlockType.Ground;
 		this.bType[1] = BlockType.Road;
+		this.bType[2] = BlockType.Building;
+		this.TLType = TrafficLightType.xGreen;
 		this.index = 0;		
 	}
 	
@@ -33,15 +36,15 @@ public class User {
 	}
 	
 	public void update() {
-		if(Mouse.isButtonDown(0) && !leftMouseDown) {
+		if(Mouse.isButtonDown(0)) {
 		setBlock();
 		
 		}
-		leftMouseDown = Mouse.isButtonDown(0);
 		if(Mouse.isButtonDown(1) && !rightMouseDown) {
-		tLightList(new TrafficLight1(QuickLoad("Intersection1"), grid.getBlock(Mouse.getX()/ 30, (Artiste.HEIGHT - Mouse.getY()) / 30)));
+	//	tLightList.add(new TrafficLight1(QuickLoad("Intersection1"), grid.getBlock(18, 9)));
 		}
 		rightMouseDown = Mouse.isButtonDown(1);
+		
 		while(Keyboard.next()) {
 			if(Keyboard.getEventKey() == Keyboard.KEY_RIGHT && Keyboard.getEventKeyState()) {
 				iterateIndex();

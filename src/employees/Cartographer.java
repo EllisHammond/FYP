@@ -47,7 +47,7 @@ public class Cartographer {
 		}
 		return grid;
 	}
-
+	
 	// Turns a type of block into a string
 	@SuppressWarnings("incomplete-switch")
 	public static String getBlockID(Block b) {

@@ -3,25 +3,36 @@ package dat;
 import static employees.Artiste.DrawBlockTex;
 import static employees.Artiste.DrawRotateCar;
 import static employees.SimTime.Delta;
-
+import static employees.Artiste.CollisionDetection;
 import java.util.ArrayList;
 
 import org.newdawn.slick.opengl.Texture;
 
 public class Car implements Object {
+	public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
+	}
+
 	private int width, height, currentQuadrantPoint;
 	private float velocity, x, y;
 	private Texture texture;
 	private Block startBlock;
 	private boolean first, exists = true;
 	private BlockGrid grid;
+	
 
 	private ArrayList<QuadrantPoint> corner;
 	private int[] directions;
+	private boolean collides;
+	private ID id;
 
-	public Car(Texture texture, Block startBlock, BlockGrid grid, int width, int height, float velocity) {
+	public Car(Texture texture, Block startBlock, BlockGrid grid, int width, int height, float velocity, ID id) {
 		this.texture = texture;
-
+		this.id = id;
 		this.startBlock = startBlock;
 		this.x = startBlock.getX();
 		this.y = startBlock.getY();
@@ -30,6 +41,7 @@ public class Car implements Object {
 		this.velocity = velocity;
 		this.grid = grid;
 		this.first = true;
+		this.collides = false;
 		this.corner = new ArrayList<QuadrantPoint>();
 		this.directions = new int[2];
 		// X direction
@@ -54,11 +66,11 @@ public class Car implements Object {
 					deleteCar();
 
 				} else
-					currentQuadrantPoint++;
+					currentQuadrantPoint++;		
  			}
 
 			else {
-
+				
 				// If not at a checkpoint, continue in current direction
 				x += Delta() * corner.get(currentQuadrantPoint).getxDirection() * velocity;
 				y += Delta() * corner.get(currentQuadrantPoint).getyDirection() * velocity;
@@ -70,6 +82,7 @@ public class Car implements Object {
 
 	// Run when last checkpoint is reached by car
 
+	
 	private void deleteCar() {
 		exists = false;
 	}
@@ -87,10 +100,8 @@ public class Car implements Object {
 		return reached;
 	}
 	
-	private void carCollision() {
-		int collisionA = 0;
-		
-	}
+	
+	
 	private void populateQuadrantPointList() {
 		// Add first checkpoint manually based on startBlock
 		corner.add(findNextC(startBlock, directions = chooseDirection(startBlock)));
@@ -178,6 +189,8 @@ public class Car implements Object {
 			DrawBlockTex(texture, x, y, width, height);
 		}
 	}
+	
+	
 
 	public int getWidth() {
 		return width;

@@ -18,9 +18,11 @@ public class MapEdit {
 	public MapEdit() {
 		this.grid = loadMap("Map1");
 		this.index = 0;
-		this.bType = new BlockType[3];
+		this.bType = new BlockType[4];
 		this.bType[0] = BlockType.Ground;
 		this.bType[1] = BlockType.Road;
+		this.bType[2] = BlockType.Building;
+		this.bType[3] = BlockType.Building2;
 	}
 
 	public void update() {
@@ -39,7 +41,10 @@ public class MapEdit {
 			if(Keyboard.getEventKey() == Keyboard.KEY_S && Keyboard.getEventKeyState()) {
 				saveMap("Map1", grid);
 			}
-
+			
+			if(Keyboard.getEventKey() == Keyboard.KEY_L && Keyboard.getEventKeyState()) {
+				loadMap("Map1");
+			}	
 		}
 	}
 

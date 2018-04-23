@@ -32,11 +32,13 @@ public class BlockGrid {
 				case 1:
 					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Road);
 					break;
-				
 				case 2:
-					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Building);
+					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Spawner);
 					break;	
 				case 3:
+					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Building);
+					break;	
+				case 4:
 					map[i][j] = new Block(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, BlockType.Building2);
 					break;	
 				}

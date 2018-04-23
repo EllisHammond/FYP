@@ -8,7 +8,7 @@ public class Block
     private Texture texture;
     private BlockType type;
     
-    
+    // This class deals with the bounds of each Block object, and prepares any variables it may have
    
     public Block(float x, float y, float width, float height, BlockType type) {
             this.x = x;

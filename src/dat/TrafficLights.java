@@ -10,12 +10,12 @@ public abstract class TrafficLights implements Object {
 	private float  x, y;
 	private Texture texture;
 	
-	public TrafficLights(Texture texture, float x, float y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.texture = texture;
-		this.width = width;
-		this.height = height;
+	public TrafficLights(Texture texture, Block startBlock) {
+		this.x = startBlock.getX();
+		this.y = startBlock.getY();
+		this.texture = texture;;
+		this.width = (int) startBlock.getWidth();
+		this.height =(int) startBlock.getHeight();
 	}
 	
 	public float getX() {

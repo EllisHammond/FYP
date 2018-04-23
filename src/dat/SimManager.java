@@ -18,11 +18,11 @@ public class SimManager {
 	
 		grid = new BlockGrid(map);
 		user = new User(grid);
-		spawn = new Spawner(2, new Car(QuickLoad("carx"), grid.getBlock(0, 28), grid, (BLOCK_SIZE/4) +(BLOCK_SIZE/2), BLOCK_SIZE/2, 60));
+		spawn = new Spawner(3, new Car(QuickLoad("carx"), grid.getBlock(0, 28), grid, BLOCK_SIZE/4, BLOCK_SIZE/4, 60, ID.Car));
 		
-		tL1 = new TrafficLight1(QuickLoad("Intersection1"), 120, 540, 30, 30);
-		tL2 = new TrafficLight2(QuickLoad("Intersection2"), 120, 540, 30, 30);
-		tL3 = new TrafficLight3(QuickLoad("Intersection3"), 120, 540, 30, 30);
+		tL1 = new TrafficLight1(QuickLoad("Intersection1"), grid.getBlock(4, 18));
+		tL2 = new TrafficLight2(QuickLoad("Intersection2"),  grid.getBlock(4, 18));
+		tL3 = new TrafficLight3(QuickLoad("Intersection3"),  grid.getBlock(4, 18));
 		
 		
 	}
